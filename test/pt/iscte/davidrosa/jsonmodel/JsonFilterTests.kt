@@ -83,12 +83,16 @@ class JsonFilterTests {
             (value is JsonObject && value.keys.contains("tipo") && value.get("tipo") is JsonString && (value.get("tipo") as JsonString).value == "email")
         }
         
+        val pathFilteredObj = complexObj.filter { path,value ->
+            path.contains("contactos") && value is JsonObject && value.keys.contains("tipo")
+        }
+        
         // then
         val filtered = arr.filter(predicate)
         assertEquals(Json.arrayOf(
             Json.objectOf("name" to Json.of("Bob"),"age" to Json.of(30))),
             filtered)
         assertEquals(Json.objectOf("pessoa" to Json.objectOf("contactos" to Json.arrayOf(Json.objectOf("tipo" to Json.of("email"), "valor" to Json.of("maria@email.com"))))), emailsOnly)
-
+        assertEquals(Json.objectOf("pessoa" to Json.objectOf("contactos" to Json.arrayOf(Json.objectOf("tipo" to Json.of("email"), "valor" to Json.of("maria@email.com")),Json.objectOf("tipo" to Json.of("telefone"),"valor" to Json.of(123456789))))), pathFilteredObj)
     }
 }

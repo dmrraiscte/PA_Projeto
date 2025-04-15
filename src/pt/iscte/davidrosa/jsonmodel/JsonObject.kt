@@ -80,10 +80,13 @@ class JsonObject private constructor(private val properties : Map<String, JsonVa
     fun get(key : String) : JsonValue? = properties[key]
 
     /**
-     * Filters properties using a predicate.
+     * Filters properties of a [JsonObject] based on a predicate.
      *
-     * @param predicate Function that determines which properties to keep
-     * @return A new [JsonObject] containing only matching properties
+     * This function recursively filters the object and its nested structures,
+     * keeping only properties whose values satisfy the predicate.
+     *
+     * @param predicate Function that determines whether a [JsonValue] should be included
+     * @return A new [JsonObject] containing only the properties that satisfy the predicate
      */
     fun filter(predicate: (JsonValue) -> Boolean) : JsonObject {
         val result = mutableMapOf<String, JsonValue>()
@@ -111,10 +114,25 @@ class JsonObject private constructor(private val properties : Map<String, JsonVa
         return JsonObject(result.toMap())
     }
 
+    /**
+     * Filters properties of a [JsonObject] based on a path predicate.
+     *
+     * This function serves as an entry point for path-based filtering.
+     *
+     * @param pathPredicate Function that evaluates a value at a specific path
+     * @return A new [JsonObject] with properties that satisfy the path predicate
+     */
     fun filter(pathPredicate: (List<String>,JsonValue) -> Boolean) : JsonObject {
         return filterWithPath(emptyList(), pathPredicate)
     }
 
+    /**
+     * Internal recursive function that filters [JsonObject] properties based on path information.
+     *
+     * @param currentPath The current path in the Json structure
+     * @param pathPredicate Function that determines whether a value at a specific path should be included
+     * @return A new [JsonObject] with properties that satisfy the path predicate
+     */
     internal fun filterWithPath(currentPath: List<String>,pathPredicate: (List<String>,JsonValue) -> Boolean) : JsonObject {
         val result = mutableMapOf<String, JsonValue>()
 
@@ -139,7 +157,16 @@ class JsonObject private constructor(private val properties : Map<String, JsonVa
         return JsonObject(result.toMap())
     }
 
-    fun deepMap(transform: (JsonValue) -> JsonValue) : JsonObject {
+    /**
+     * Internal recursive function that transforms all values in a [JsonObject] and its nested structures.
+     *
+     * Applies the transform function to each value in the object and recursively transforms
+     * any nested [JsonArray] or [JsonObject] within the transformed results.
+     *
+     * @param transform Function that converts each [JsonValue] to another [JsonValue]
+     * @return A new [JsonObject] with all values and nested structures transformed
+     */
+    internal fun deepMap(transform: (JsonValue) -> JsonValue) : JsonObject {
         val result = mutableMapOf<String, JsonValue>()
 
         for((key,value) in properties) {
@@ -173,12 +200,28 @@ class JsonObject private constructor(private val properties : Map<String, JsonVa
      */
     fun forEach(action : (String, JsonValue) -> Unit) = properties.forEach(action)
 
+    /**
+     * Checks if this [JsonObject] is equal to another object.
+     *
+     * Two [JsonObject] are considered equal only if they are the same instance, or
+     * if the other object is also a [JsonObject] with identical map content.
+     *
+     * @param other The object to compare with this [JsonObject]
+     * @return true if the objects are equal, false otherwise
+     */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is JsonObject) return false
         return properties == other.properties
     }
 
+    /**
+     * Returns the hash code value for this [JsonObject].
+     *
+     * The hash code is based on the underlying Map's hash code.
+     *
+     * @return The hash code value
+     */
     override fun hashCode(): Int = properties.hashCode()
 
 }
