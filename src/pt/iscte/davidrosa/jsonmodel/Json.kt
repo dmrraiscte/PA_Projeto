@@ -111,6 +111,7 @@ object Json {
      * @return Appropriate Json value representation
      * @throws IllegalArgumentException for unsupported types
      */
+    @Suppress("UNCHECKED_CAST")
     fun of(value : Any?) : JsonValue = when(value) {
         null -> JsonNull
         is Number -> JsonNumber(value)
