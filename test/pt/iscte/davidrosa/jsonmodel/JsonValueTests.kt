@@ -1,7 +1,7 @@
 package pt.iscte.davidrosa.jsonmodel
 
-import org.junit.Test
 import org.junit.Assert.*
+import org.junit.Test
 import org.junit.experimental.runners.Enclosed
 import org.junit.runner.RunWith
 
@@ -154,22 +154,57 @@ class JsonValueTests {
         }
     }
 
-    class JsonEqualityTests {
-
+    class JsonEnumTests {
+        enum class EvalType {
+            TEST, PROJECT, EXAM
+        }
+        
         @Test
-        fun `should test for object equality`() {
+        fun `should correctly create Json string instance`() {
             // given
-            val a = Json.of(1)
-            val b = Json.of(1)
-
-            // when
-
+            val a = Json.of(EvalType.TEST)
 
             // then
-            assertEquals(a, b)
+            require(a is JsonString)
+            assertEquals("\"TEST\"", a.stringify())
         }
-
     }
 
+    class JsonDataClassesTests {
+        enum class EvalType {
+            TEST, PROJECT, EXAM
+        }
+        data class EvalItem(
+            val name: String,
+            val percentage: Double,
+            val mandatory: Boolean,
+            val type: EvalType?
+        )
+        data class Course(
+            val name: String,
+            val credits: Int,
+            val evaluation: List<EvalItem>
+        )
+
+        val course = Course(
+            "BA",
+            6,
+            listOf(
+                EvalItem("quizzes", 0.2, false, null),
+                EvalItem("project", 0.8, true, EvalType.PROJECT)
+            )
+        )
+
+        @Test
+        fun `should correctly create the Json hierarchy for data classes`() {
+            // given
+            val a = Json.of(course)
+
+            // then
+            require(a is JsonObject)
+            assertEquals("{\"credits\" : 6,\"evaluation\" : [{\"mandatory\" : false,\"name\" : \"quizzes\",\"percentage\" : 0.2,\"type\" : null}," +
+                    "{\"mandatory\" : true,\"name\" : \"project\",\"percentage\" : 0.8,\"type\" : \"PROJECT\"}],\"name\" : \"BA\"}", a.stringify())
+        }
+    }
 
 }
