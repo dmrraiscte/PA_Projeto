@@ -1,5 +1,8 @@
 package pt.iscte.davidrosa.jsonmodel
 
+import kotlin.reflect.*
+import kotlin.reflect.full.memberProperties
+
 /**
  * Factory object for creating [JsonValue] instances with type-safe construction methods.
  *
@@ -99,6 +102,7 @@ object Json {
      * - Numbers -> [JsonNumber]
      * - Strings -> [JsonString]
      * - Booleans -> [JsonBoolean]
+     * - Enums -> [JsonString] (name of the enum constant)
      * - Collections -> [JsonArray] (recursive)
      * - Arrays -> [JsonArray] (recursive)
      * - Maps -> [JsonObject] (recursive; converts keys to strings)
@@ -113,10 +117,26 @@ object Json {
         is String -> JsonString(value)
         is Boolean -> JsonBoolean(value)
         is JsonValue -> value
+        is Enum<*> -> JsonString(value.name)
         is Iterable<*> -> arrayOf(value.map { of(it) })
         is Array<*> -> arrayOf(value.map { of(it) })
         is Map<*,*> -> objectOf(value.mapKeys { it.key.toString() }.mapValues { of(it.value) })
-        else -> throw IllegalArgumentException("Unsupported JSON value type: ${value::class.java}")
+        else -> {
+            try {
+                val kClass = value::class
+                val properties = kClass.memberProperties
+
+                val entries = properties.map { prop ->
+                    val name = prop.name
+                    val propValue = (prop as KProperty1<Any,*>).get(value)
+                    name to of(propValue)
+                }
+
+                objectOf(entries)
+            } catch (e: Exception) {
+                throw IllegalArgumentException("Can't convert ${value::class.java} to JsonValue", e)
+            }
+        }
     }
 
 }
