@@ -12,8 +12,6 @@ package pt.iscte.davidrosa.jsonmodel
  */
 data class JsonString(val value : String) : JsonValue {
 
-    // todo - add support for special characters inside strings
-
     /**
      * Accepts a visitor according to the visitor pattern.
      *

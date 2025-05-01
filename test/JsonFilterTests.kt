@@ -26,7 +26,7 @@ class JsonFilterTests {
     fun `should test Json array filtering`() {
         // given
         val array = Json.arrayOf(Json.of(1), Json.arrayOf(Json.of(2), Json.of(3)), Json.of(4))
-        val array2 = Json.arrayOf(Json.of("text"), Json.of(2), Json.of(false), Json.of(null))
+        val array2 = Json.arrayOf(Json.of("text"), Json.of(2), Json.of(false), Json.nullValue())
 
         // when
         val predicate = { value: JsonValue ->
