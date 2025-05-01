@@ -1,7 +1,6 @@
-package pt.iscte.davidrosa.jsonmodel
-
 import org.junit.Test
 import org.junit.Assert.*
+import pt.iscte.davidrosa.jsonmodel.*
 
 class JsonFilterTests {
 
@@ -18,7 +17,7 @@ class JsonFilterTests {
 
         // then
         val filtered = obj.filter(predicate)
-        val filtered2 = obj2.filter {value : JsonValue -> value is JsonString}
+        val filtered2 = obj2.filter {value : JsonValue -> value is JsonString }
         assertEquals(Json.objectOf("b" to Json.objectOf("d" to Json.of(3))), filtered)
         assertEquals(Json.objectOf("nome" to Json.of("joao")),filtered2)
     }
@@ -26,8 +25,8 @@ class JsonFilterTests {
     @Test
     fun `should test Json array filtering`() {
         // given
-        val array = Json.arrayOf(Json.of(1),Json.arrayOf(Json.of(2),Json.of(3)),Json.of(4))
-        val array2 = Json.arrayOf(Json.of("text"),Json.of(2),Json.of(false),Json.of(null))
+        val array = Json.arrayOf(Json.of(1), Json.arrayOf(Json.of(2), Json.of(3)), Json.of(4))
+        val array2 = Json.arrayOf(Json.of("text"), Json.of(2), Json.of(false), Json.of(null))
 
         // when
         val predicate = { value: JsonValue ->
@@ -37,7 +36,7 @@ class JsonFilterTests {
         // then
         val filtered = array.filter(predicate)
         val filtered2 = array2.filter { value -> value is JsonNumber }
-        assertEquals(Json.arrayOf(Json.arrayOf(Json.of(3)),Json.of(4)),filtered)
+        assertEquals(Json.arrayOf(Json.arrayOf(Json.of(3)), Json.of(4)),filtered)
         assertEquals(Json.arrayOf(Json.of(2)),filtered2)
     }
     
@@ -45,8 +44,8 @@ class JsonFilterTests {
     fun `should test filtering of Json objects inside an array`() {
         // given
         val arr = Json.arrayOf(
-            Json.objectOf("name" to Json.of("Alice"),"age" to Json.of(25)),
-            Json.objectOf("name" to Json.of("Bob"),"age" to Json.of(30))
+            Json.objectOf("name" to Json.of("Alice"), "age" to Json.of(25)),
+            Json.objectOf("name" to Json.of("Bob"), "age" to Json.of(30))
         )
         val complexObj = Json.objectOf(
             "id" to Json.of(1),
@@ -89,10 +88,34 @@ class JsonFilterTests {
         
         // then
         val filtered = arr.filter(predicate)
-        assertEquals(Json.arrayOf(
-            Json.objectOf("name" to Json.of("Bob"),"age" to Json.of(30))),
+        assertEquals(
+            Json.arrayOf(
+                Json.objectOf("name" to Json.of("Bob"), "age" to Json.of(30))
+            ),
             filtered)
-        assertEquals(Json.objectOf("pessoa" to Json.objectOf("contactos" to Json.arrayOf(Json.objectOf("tipo" to Json.of("email"), "valor" to Json.of("maria@email.com"))))), emailsOnly)
-        assertEquals(Json.objectOf("pessoa" to Json.objectOf("contactos" to Json.arrayOf(Json.objectOf("tipo" to Json.of("email"), "valor" to Json.of("maria@email.com")),Json.objectOf("tipo" to Json.of("telefone"),"valor" to Json.of(123456789))))), pathFilteredObj)
+        assertEquals(
+            Json.objectOf(
+                "pessoa" to Json.objectOf(
+                    "contactos" to Json.arrayOf(
+                        Json.objectOf(
+                            "tipo" to Json.of(
+                                "email"
+                            ), "valor" to Json.of("maria@email.com")
+                        )
+                    )
+                )
+            ), emailsOnly)
+        assertEquals(
+            Json.objectOf(
+                "pessoa" to Json.objectOf(
+                    "contactos" to Json.arrayOf(
+                        Json.objectOf(
+                            "tipo" to Json.of(
+                                "email"
+                            ), "valor" to Json.of("maria@email.com")
+                        ), Json.objectOf("tipo" to Json.of("telefone"), "valor" to Json.of(123456789))
+                    )
+                )
+            ), pathFilteredObj)
     }
 }

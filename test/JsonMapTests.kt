@@ -1,7 +1,6 @@
-package pt.iscte.davidrosa.jsonmodel
-
 import org.junit.Test
 import org.junit.Assert.*
+import pt.iscte.davidrosa.jsonmodel.*
 
 class JsonMapTests {
 

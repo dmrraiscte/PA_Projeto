@@ -1,7 +1,6 @@
-package pt.iscte.davidrosa.jsonmodel
-
 import org.junit.Test
 import org.junit.Assert.*
+import pt.iscte.davidrosa.jsonmodel.*
 
 class JsonEqualityTests {
 
@@ -70,42 +69,51 @@ class JsonEqualityTests {
         val structure1 = Json.objectOf(
             "id" to Json.of(1),
             "tags" to Json.arrayOf(
-                Json.of("tag1"), Json.of("tag2")),
+                Json.of("tag1"), Json.of("tag2")
+            ),
             "metadata" to Json.objectOf(
                 "created" to Json.of("2023-01-01"),
                 "versions" to Json.arrayOf(
                     Json.objectOf(
                         "version" to Json.of(1.0),
-                        "stable" to Json.of(true)),
+                        "stable" to Json.of(true)
+                    ),
                 )
-            ))
+            )
+        )
 
         val structure2 = Json.objectOf(
             "id" to Json.of(1),
             "tags" to Json.arrayOf(
-                Json.of("tag1"), Json.of("tag2")),
+                Json.of("tag1"), Json.of("tag2")
+            ),
             "metadata" to Json.objectOf(
                 "created" to Json.of("2023-01-01"),
                 "versions" to Json.arrayOf(
                     Json.objectOf(
                         "version" to Json.of(1.0),
-                        "stable" to Json.of(true)),
+                        "stable" to Json.of(true)
+                    ),
                 )
-            ))
+            )
+        )
 
         // Different complex structure (change deep in the structure)
         val structure3 = Json.objectOf(
             "id" to Json.of(1),
             "tags" to Json.arrayOf(
-                Json.of("tag1"), Json.of("tag2")),
+                Json.of("tag1"), Json.of("tag2")
+            ),
             "metadata" to Json.objectOf(
                 "created" to Json.of("2023-01-01"),
                 "versions" to Json.arrayOf(
                     Json.objectOf(
                         "version" to Json.of(1.1),
-                        "stable" to Json.of(true)),
+                        "stable" to Json.of(true)
+                    ),
                 )
-            ))
+            )
+        )
 
         // then
         assertEquals(structure1, structure1)

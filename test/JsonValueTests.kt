@@ -1,9 +1,8 @@
-package pt.iscte.davidrosa.jsonmodel
-
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.experimental.runners.Enclosed
 import org.junit.runner.RunWith
+import pt.iscte.davidrosa.jsonmodel.*
 
 @RunWith(Enclosed::class)
 class JsonValueTests {
@@ -34,7 +33,7 @@ class JsonValueTests {
             val a = JsonNull
 
             // then
-            assertEquals("null", a.stringify())
+            assertEquals("null", JsonNull.stringify())
 
             assertEquals("null", Json.of(a).stringify())
         }
@@ -128,7 +127,7 @@ class JsonValueTests {
         @Test
         fun `should test all basic functionality of Json object`() {
             // given
-            val z = Json.of(mapOf("primeiro" to a,"segundo" to b,"terceiro" to c,"quarto" to d))
+            val z = Json.of(mapOf("primeiro" to a, "segundo" to b, "terceiro" to c, "quarto" to d))
 
             // then
             assertEquals("{\"primeiro\" : \"Hello World\",\"segundo\" : -7.5,\"terceiro\" : false,\"quarto\" : null}", z.stringify())
@@ -137,7 +136,7 @@ class JsonValueTests {
         @Test
         fun `should test for json arrays inside json objects`() {
             // given
-            val z = Json.objectOf("primeiro" to a, "segundo" to b, "terceiro" to c,"quarto" to d,"quinto" to e)
+            val z = Json.objectOf("primeiro" to a, "segundo" to b, "terceiro" to c, "quarto" to d, "quinto" to e)
 
             // then
             assertEquals("{\"primeiro\" : \"Hello World\",\"segundo\" : -7.5,\"terceiro\" : false,\"quarto\" : null,\"quinto\" : [\"Hello World\",\"Hello World\"]}", z.stringify())
@@ -146,7 +145,7 @@ class JsonValueTests {
         @Test
         fun `should test for json objects inside json objects`() {
             // given
-            val y = Json.objectOf("primeiro" to a, "segundo" to b, "terceiro" to c,"quarto" to d,"quinto" to e)
+            val y = Json.objectOf("primeiro" to a, "segundo" to b, "terceiro" to c, "quarto" to d, "quinto" to e)
             val z = Json.objectOf("children" to y)
 
             // then
