@@ -9,7 +9,7 @@ class JsonVisitorTests {
     fun `should visit all Json value types`() {
         // given
         val visited = mutableListOf<String>()
-        val visitor = object : JsonVisitorAdapter() {
+        val visitor = object : JsonVisitor {
             override fun visit(obj: JsonObject, parentKey: String?) {
                 visited.add("Object:${parentKey ?: "root"}")
             }
@@ -70,7 +70,7 @@ class JsonVisitorTests {
     fun `should correctly track parent keys during visitation`() {
         // given
         val keyPaths = mutableListOf<String>()
-        val visitor = object : JsonVisitorAdapter() {
+        val visitor = object : JsonVisitor {
             override fun visit(str: JsonString, parentKey: String?) {
                 if (parentKey != null) {
                     keyPaths.add(parentKey)
@@ -111,7 +111,7 @@ class JsonVisitorTests {
     @Test
     fun `should implement a visitor that collects strings`() {
         // given
-        val stringCollector = object : JsonVisitorAdapter() {
+        val stringCollector = object : JsonVisitor {
             val strings = mutableListOf<String>()
 
             override fun visit(str: JsonString, parentKey: String?) {
@@ -162,7 +162,7 @@ class JsonVisitorTests {
     @Test
     fun `should implement a path tracking visitor`() {
         // given
-        val pathTracker = object : JsonVisitorAdapter() {
+        val pathTracker = object : JsonVisitor {
             val paths = mutableMapOf<String, Any>()
             private val currentPath = mutableListOf<String>()
 
