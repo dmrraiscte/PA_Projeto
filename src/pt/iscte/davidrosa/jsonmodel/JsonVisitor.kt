@@ -18,7 +18,7 @@ interface JsonVisitor {
      * @param obj The [JsonObject] to be visited
      * @param parentKey The parent key of the `obj`, if it exists
      */
-    fun visit(obj: JsonObject, parentKey: String? = null)
+    fun visit(obj: JsonObject, parentKey: String? = null) {}
 
     /**
      * Visits a [JsonArray].
@@ -26,7 +26,7 @@ interface JsonVisitor {
      * @param arr The [JsonArray] to be visited
      * @param parentKey The parent key of the `arr`, if it exists
      */
-    fun visit(arr: JsonArray, parentKey: String? = null)
+    fun visit(arr: JsonArray, parentKey: String? = null) {}
 
     /**
      * Visits a [JsonString].
@@ -34,7 +34,7 @@ interface JsonVisitor {
      * @param str The [JsonString] to be visited
      * @param parentKey The parent key of the `str`, if it exists
      */
-    fun visit(str: JsonString, parentKey: String? = null)
+    fun visit(str: JsonString, parentKey: String? = null) {}
 
     /**
      * Visits a [JsonNumber].
@@ -42,7 +42,7 @@ interface JsonVisitor {
      * @param num The [JsonNumber] to be visited
      * @param parentKey The parent key of the `num`, if it exists
      */
-    fun visit(num: JsonNumber, parentKey: String? = null)
+    fun visit(num: JsonNumber, parentKey: String? = null) {}
 
     /**
      * Visits a [JsonBoolean].
@@ -50,7 +50,7 @@ interface JsonVisitor {
      * @param bool The [JsonBoolean] to be visited
      * @param parentKey The parent key of the `bool`, if it exists
      */
-    fun visit(bool: JsonBoolean, parentKey: String? = null)
+    fun visit(bool: JsonBoolean, parentKey: String? = null) {}
 
     /**
      * Visits a [JsonNull].
@@ -58,6 +58,6 @@ interface JsonVisitor {
      * @param nul The [JsonNull] to be visited
      * @param parentKey The parent key of the `nul`, if it exists
      */
-    fun visit(nul: JsonNull, parentKey: String? = null)
+    fun visit(nul: JsonNull, parentKey: String? = null) {}
 
 }

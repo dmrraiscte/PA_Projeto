@@ -219,7 +219,7 @@ class JsonMapTests {
             )
         )
 
-        val pathVisitor = object : JsonVisitorAdapter() {
+        val pathVisitor = object : JsonVisitor {
             val result = mutableMapOf<String, JsonValue>()
             private val currentPath = mutableListOf<String>()
 
