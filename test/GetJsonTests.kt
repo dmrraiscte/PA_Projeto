@@ -94,7 +94,7 @@ class GetJsonTests() {
         //@BeforeAll
         @JvmStatic
         fun setupServer() {
-            app = GetJson(UserController::class, TestController::class, ErrorController::class)
+            app = GetJson(UserController::class, TestController::class)
             app.start(TEST_PORT)
             println("Test server started on port $TEST_PORT")
         }
