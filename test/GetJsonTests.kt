@@ -15,9 +15,7 @@ fun main() {
 }
 
 @Controller
-class InvalidController {
-
-}
+class InvalidController
 
 class AnotherInvalidController {
     @Mapping("unregistered")
@@ -78,7 +76,6 @@ class TestController {
         @Param(name = "b") b: Int = 0
     ): Int = a + b
 
-    // This method should be ignored by the framework
     fun ignored(): String = "This should not be accessible"
 }
 
@@ -109,7 +106,7 @@ class ProductController {
 
 data class Product(val id: Int, val name: String, val price: Double)
 
-class GetJsonTests() {
+class GetJsonTests {
 
     companion object {
         private const val TEST_PORT = 8081
