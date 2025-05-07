@@ -1,8 +1,8 @@
 package pt.iscte.davidrosa.getjson
 
+import pt.iscte.davidrosa.jsonmodel.Json
 import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpServer
-import pt.iscte.davidrosa.jsonmodel.Json
 import java.net.InetSocketAddress
 import java.util.concurrent.Executors
 import kotlin.reflect.KClass
@@ -34,13 +34,10 @@ class GetJson(vararg controllers: KClass<*>) {
                     try {
                         val methodMapping = function.findAnnotation<Mapping>()
                         if (methodMapping != null) {
-                            // Combine controller base path and method path
                             val fullPath = normalizePath(basePath, methodMapping.path)
 
-                            // Create instance of controller
                             val controllerInstance = controller.constructors.first().call()
 
-                            // Register the route
                             routeHandlers[fullPath] = RouteHandler(controllerInstance, function)
                             methodsRegistered++
                         }
@@ -72,7 +69,6 @@ class GetJson(vararg controllers: KClass<*>) {
     }
 
     fun start(port: Int) {
-        //server.stop(0)
         server.bind(InetSocketAddress(port),0)
         server.start()
         println("--- Server started on port $port ---")
@@ -84,7 +80,6 @@ class GetJson(vararg controllers: KClass<*>) {
     }
 
     private fun handleRequest(exchange: HttpExchange) {
-        // check request method
         if(exchange.requestMethod != "GET") {
             errorResponse(exchange, 405, "Method ${exchange.requestMethod} not allowed")
             return
@@ -92,7 +87,6 @@ class GetJson(vararg controllers: KClass<*>) {
 
         val path = exchange.requestURI.path
 
-        // check if matching route exists
         val (handler, pathVariables) = findMatchingRoutes(path) ?: run {
             errorResponse(exchange, 404, "Route not found")
             return
@@ -112,14 +106,11 @@ class GetJson(vararg controllers: KClass<*>) {
     }
 
     private fun findMatchingRoutes(path: String): Pair<RouteHandler, Map<String,String>>? {
-        // try the basic matching case
         routeHandlers[path]?.let { handler -> return handler to emptyMap() }
 
-        // try for complex paths
         for ((routePattern, handler) in routeHandlers) {
-            // for each route handler try to match route path pattern to real path pattern
             val pathVariables = matchPathPattern(routePattern, path)
-            if(pathVariables != null) { // if there was a match between route path pattern and real path pattern return
+            if(pathVariables != null) {
                 return handler to pathVariables
             }
         }
@@ -139,7 +130,6 @@ class GetJson(vararg controllers: KClass<*>) {
             val patternPart = patternParts[i]
             val pathPart = pathParts[i]
 
-            // check if this pattern section is a variable
             if(patternPart.startsWith("{") && patternPart.endsWith("}")) {
                 val varName = patternPart.substringAfter("{").substringBefore("}")
                 pathVariables[varName] = pathPart
@@ -170,7 +160,6 @@ class GetJson(vararg controllers: KClass<*>) {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        //exchange.responseBody.write(response.toByteArray())
     }
 
     private fun errorResponse(exchange: HttpExchange, statusCode: Int, message: String) {
@@ -184,8 +173,6 @@ class GetJson(vararg controllers: KClass<*>) {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-//        exchange.sendResponseHeaders(statusCode, response.stringify().length.toLong())
-//        exchange.responseBody.write(response.stringify().toByteArray())
     }
 
     private fun normalizePath(basePath: String, methodPath: String): String {
@@ -227,7 +214,11 @@ class GetJson(vararg controllers: KClass<*>) {
                     val paramName = paramAnnotation.name.ifEmpty { param.name ?: throw IllegalArgumentException("Parameter name not available") }
 
                     val value = queryParameters[paramName]
-                    args[param] = if(value != null) convertToType(value, param) else null
+                    if (value != null) {
+                        args[param] = convertToType(value, param)
+                    } else if (!param.isOptional) {
+                        throw IllegalArgumentException("Required parameter '$paramName' is missing")
+                    }
                     return@forEach
                 }
             }
