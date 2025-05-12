@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/GetJson/GetJson.iml" filepath="$PROJECT_DIR$/GetJson/GetJson.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JsonLibrary/JsonLibrary.iml" filepath="$PROJECT_DIR$/JsonLibrary/JsonLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/PA_Projeto.iml" filepath="$PROJECT_DIR$/PA_Projeto.iml" />
     </modules>
   </component>

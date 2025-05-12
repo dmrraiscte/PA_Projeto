@@ -122,7 +122,7 @@ class JsonObject private constructor(private val properties : Map<String, JsonVa
      * @param pathPredicate Function that evaluates a value at a specific path
      * @return A new [JsonObject] with properties that satisfy the path predicate
      */
-    fun filter(pathPredicate: (List<String>,JsonValue) -> Boolean) : JsonObject {
+    fun filter(pathPredicate: (List<String>, JsonValue) -> Boolean) : JsonObject {
         return filterWithPath(emptyList(), pathPredicate)
     }
 
@@ -133,7 +133,7 @@ class JsonObject private constructor(private val properties : Map<String, JsonVa
      * @param pathPredicate Function that determines whether a value at a specific path should be included
      * @return A new [JsonObject] with properties that satisfy the path predicate
      */
-    internal fun filterWithPath(currentPath: List<String>,pathPredicate: (List<String>,JsonValue) -> Boolean) : JsonObject {
+    internal fun filterWithPath(currentPath: List<String>,pathPredicate: (List<String>, JsonValue) -> Boolean) : JsonObject {
         val result = mutableMapOf<String, JsonValue>()
 
         for((key,value) in properties) {

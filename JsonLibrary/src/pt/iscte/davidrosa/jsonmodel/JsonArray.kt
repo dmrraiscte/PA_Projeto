@@ -188,7 +188,7 @@ class JsonArray private constructor(private val array : List<JsonValue>) : JsonV
      * @param transform Function that converts each JsonValue to another [JsonValue]
      * @return A new [JsonArray] with all elements and nested structures transformed
      */
-    fun deepMap(transform : (JsonValue) -> JsonValue ) : JsonArray {
+    fun deepMap(transform : (JsonValue) -> JsonValue) : JsonArray {
         val result = mutableListOf<JsonValue>()
 
         for (element in array) {

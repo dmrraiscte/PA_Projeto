@@ -78,7 +78,7 @@ object Json {
      *
      * @param pairs The properties to include in the object
      */
-    fun objectOf(vararg pairs : Pair<String,JsonValue>) : JsonObject = JsonObject(*pairs)
+    fun objectOf(vararg pairs : Pair<String, JsonValue>) : JsonObject = JsonObject(*pairs)
 
     /**
      * Creates a [JsonObject] from a map of properties.
@@ -92,7 +92,7 @@ object Json {
      *
      * @param collection The property pairs
      */
-    fun objectOf(collection : Collection<Pair<String,JsonValue>>) : JsonObject = JsonObject(collection)
+    fun objectOf(collection : Collection<Pair<String, JsonValue>>) : JsonObject = JsonObject(collection)
 
     /**
      * Universal factory method that converts any Kotlin value to its Json representation.

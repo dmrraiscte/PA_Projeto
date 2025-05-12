@@ -1,6 +1,5 @@
 package pt.iscte.davidrosa.getjson
 
-import pt.iscte.davidrosa.jsonmodel.Json
 import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpServer
 import java.net.InetSocketAddress
@@ -10,6 +9,7 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.jvmErasure
+import pt.iscte.davidrosa.jsonmodel.Json
 
 /**
  * A REST framework that maps controller classes to HTTP endpoints and responds in JSON format.
