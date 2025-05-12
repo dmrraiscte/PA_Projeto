@@ -10,19 +10,12 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
 fun main() {
-    val app = GetJson(UserController::class, ProductController::class, TestController::class, InvalidController::class, AnotherInvalidController::class)
+    val app = GetJson(UserController::class, ProductController::class, TestController::class, InvalidController::class)
     app.start(8080)
 }
 
-@Controller
 class InvalidController
 
-class AnotherInvalidController {
-    @Mapping("unregistered")
-    fun test(): String = "This should not be registered"
-}
-
-@Controller
 @Mapping("api")
 class UserController {
     @Mapping("ints")
@@ -43,7 +36,6 @@ class UserController {
     ): Map<String, String> = mapOf(text to text.repeat(n))
 }
 
-@Controller
 @Mapping("test")
 class TestController {
     @Mapping("hello")
@@ -79,7 +71,6 @@ class TestController {
     fun ignored(): String = "This should not be accessible"
 }
 
-@Controller
 @Mapping("error")
 class ErrorController {
     @Mapping("throw")
@@ -88,7 +79,6 @@ class ErrorController {
     }
 }
 
-@Controller
 @Mapping("products")
 class ProductController {
     private val products = mapOf(

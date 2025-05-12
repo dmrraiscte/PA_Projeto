@@ -22,10 +22,6 @@ class GetJson(vararg controllers: KClass<*>) {
 
         controllers.forEach { controller ->
             try {
-                if(!controller.hasAnnotation<Controller>()) {
-                    warnings.add("WARNING: Class ${controller.simpleName} is not annotated with @Controller and will be skipped.")
-                    return@forEach
-                }
                 val basePath = controller.findAnnotation<Mapping>()?.path ?: ""
 
                 var methodsRegistered = 0
