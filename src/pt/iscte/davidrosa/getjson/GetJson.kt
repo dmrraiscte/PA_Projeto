@@ -11,11 +11,21 @@ import kotlin.reflect.KParameter
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.jvmErasure
 
+/**
+ * A REST framework that maps controller classes to HTTP endpoints and responds in JSON format.
+ *
+ * @param controllers The controller classes to register for handling HTTP requests
+ */
 class GetJson(vararg controllers: KClass<*>) {
 
     private val routeHandlers = mutableMapOf<String, RouteHandler>()
     private val server: HttpServer = HttpServer.create()
 
+    /**
+     * Initializes the server and registers all route handlers from the provided controllers.
+     *
+     * Any errors during registration are collected and printed as warnings.
+     */
     init {
         val validControllers = mutableListOf<KClass<*>>()
         val warnings = mutableListOf<String>()
@@ -64,17 +74,37 @@ class GetJson(vararg controllers: KClass<*>) {
         }
     }
 
+    /**
+     * Starts the HTTP server on the specified port.
+     *
+     * @param port The port number on which the server will listen for incoming requests
+     */
     fun start(port: Int) {
         server.bind(InetSocketAddress(port),0)
         server.start()
         println("--- Server started on port $port ---")
     }
 
+    /**
+     * Stops the HTTP server.
+     */
     fun stop() {
         server.stop(0)
         println("--- Server stopped ---")
     }
 
+    /**
+     * Main request handler that processes all incoming HTTP requests.
+     *
+     * This method:
+     * 1. Verifies the request method is GET
+     * 2. Matches the request path against registered routes
+     * 3. Extracts path variables and query parameters
+     * 4. Invokes the appropriate controller method
+     * 5. Serializes the result to Json and sends the response
+     *
+     * @param exchange The HttpExchange containing the request and response objects
+     */
     private fun handleRequest(exchange: HttpExchange) {
         if(exchange.requestMethod != "GET") {
             errorResponse(exchange, 405, "Method ${exchange.requestMethod} not allowed")
@@ -101,6 +131,14 @@ class GetJson(vararg controllers: KClass<*>) {
         }
     }
 
+    /**
+     * Finds a matching route handler for the given request path.
+     *
+     * This method first tries to find an exact match, then looks for pattern-based routes with path variables.
+     *
+     * @param path The request URI path
+     * @return A pair containing the route handler and a map of path variables, or null if no match is found
+     */
     private fun findMatchingRoutes(path: String): Pair<RouteHandler, Map<String,String>>? {
         routeHandlers[path]?.let { handler -> return handler to emptyMap() }
 
@@ -114,6 +152,16 @@ class GetJson(vararg controllers: KClass<*>) {
         return null
     }
 
+    /**
+     * Matches a request path against a pattern path that may contain path variables.
+     *
+     * Path variables in the pattern are denoted by curly braces.
+     * If the pattern matches the path, this method returns a map of variable names to their values.
+     *
+     * @param pattern The route pattern with possible path variables
+     * @param path The actual request path
+     * @return A map of path variable names to values, or null if the pattern doesn't match
+     */
     private fun matchPathPattern(pattern: String, path: String): Map<String, String>? {
         val patternParts = pattern.split("/")
         val pathParts = path.split("/")
@@ -135,6 +183,12 @@ class GetJson(vararg controllers: KClass<*>) {
         return pathVariables
     }
 
+    /**
+     * Parses query parameters from the query string.
+     *
+     * @param query The query string from the request URI
+     * @return A map of parameter names to values
+     */
     private fun parseQueryParameters(query: String?): Map<String, String> {
         if(query.isNullOrEmpty()) return emptyMap()
 
@@ -146,6 +200,13 @@ class GetJson(vararg controllers: KClass<*>) {
             }
     }
 
+    /**
+     * Sends a Json response to the client.
+     *
+     * @param exchange The HttpExchange to use for the response
+     * @param statusCode The HTTP status code to return
+     * @param response The Json string to send
+     */
     private fun jsonResponse(exchange: HttpExchange, statusCode: Int, response: String) {
         try {
             exchange.responseHeaders.set("Content-Type", "application/json; charset=utf-8")
@@ -158,6 +219,13 @@ class GetJson(vararg controllers: KClass<*>) {
         }
     }
 
+    /**
+     * Sends an error response to the client in Json format.
+     *
+     * @param exchange The HttpExchange to use for the response
+     * @param statusCode The HTTP error status code to return
+     * @param message The error message
+     */
     private fun errorResponse(exchange: HttpExchange, statusCode: Int, message: String) {
         try {
             val response = Json.of(mapOf("error_message" to Json.of(message))).stringify()
@@ -171,6 +239,13 @@ class GetJson(vararg controllers: KClass<*>) {
         }
     }
 
+    /**
+     * Normalizes and combines base path and method path into a full route path.
+     *
+     * @param basePath The base path from the controller class annotation
+     * @param methodPath The path from the method annotation
+     * @return A normalized full path
+     */
     private fun normalizePath(basePath: String, methodPath: String): String {
         val normalizedBase = if (basePath.startsWith("/")) basePath else "/$basePath"
         val normalizedMethod = if (methodPath.startsWith("/")) methodPath else "/$methodPath"
@@ -180,10 +255,33 @@ class GetJson(vararg controllers: KClass<*>) {
     }
 
 
+    /**
+     * Handler class that executes controller methods with properly mapped parameters.
+     *
+     * This inner class is responsible for invoking the controller method with the
+     * appropriate parameters extracted from path variables and query parameters.
+     *
+     * @property controllerInstance The instance of the controller class
+     * @property function The controller method to invoke
+     */
     inner class RouteHandler(
         private val controllerInstance: Any,
         private val function: KFunction<*>
     ) {
+        /**
+         * Invokes the controller method with the given path variables and query parameters.
+         *
+         * This method:
+         * 1. Maps path variables to parameters annotated with [Path]
+         * 2. Maps query parameters to parameters annotated with [Param]
+         * 3. Converts parameter values to the appropriate types
+         * 4. Invokes the controller method with the mapped parameters
+         *
+         * @param pathVariables Map of path variable names to values
+         * @param queryParameters Map of query parameter names to values
+         * @return The result of the controller method invocation
+         * @throws IllegalArgumentException If a required parameter is missing or parameter type is not supported
+         */
         fun invoke(pathVariables: Map<String, String>, queryParameters: Map<String, String>): Any? {
             val args = mutableMapOf<KParameter, Any?>()
 
@@ -222,6 +320,14 @@ class GetJson(vararg controllers: KClass<*>) {
             return function.callBy(args)
         }
 
+        /**
+         * Converts a string value to the appropriate type for a parameter.
+         *
+         * @param value The string value to convert
+         * @param parameter The parameter with type information
+         * @return The converted value
+         * @throws IllegalArgumentException If the parameter is not supported
+         */
         private fun convertToType(value: String, parameter: KParameter): Any {
             return when(parameter.type.jvmErasure) {
                 String::class -> value
