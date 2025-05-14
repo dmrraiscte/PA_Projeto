@@ -279,9 +279,9 @@ class UserController {
     // Use query parameters for filtering
     @Mapping("/search")
     fun searchUsers(
-        @Param("name") name: String?,
-        @Param("age") age: Int?,
-        @Param("active") active: Boolean?
+        @Param("name") name: String,
+        @Param("age") age: Int,
+        @Param("active") active: Boolean
     ): List<User> {
         // This method will handle GET requests like:
         // /api/users/search?name=John&age=30&active=true
@@ -436,9 +436,9 @@ Errors are returned as JSON objects:
 @Mapping("/users/{userId}/orders")
 fun getUserOrders(
     @Path("userId") id: Long,
-    @Param("status") status: String?,
-    @Param("from") fromDate: String?,
-    @Param("to") toDate: String?
+    @Param("status") status: String,
+    @Param("from") fromDate: String,
+    @Param("to") toDate: String
 ): List<Order> {
     // Handle GET /users/123/orders?status=shipped&from=2023-01-01&to=2023-12-31
 }
@@ -449,13 +449,13 @@ fun getUserOrders(
 ```kotlin
 @Mapping("/products")
 fun listProducts(
-    @Param("category") category: String?,
-    @Param("minPrice") minPrice: Double?,
-    @Param("maxPrice") maxPrice: Double?,
+    @Param("category") category: String,
+    @Param("minPrice") minPrice: Double,
+    @Param("maxPrice") maxPrice: Double,
     @Param("limit") limit: Int = 20,
     @Param("offset") offset: Int = 0
 ): List<Product> {
-    // Parameters with default values or nullable types are optional
+    // Parameters with default values are optional
 }
 ```
 
