@@ -36,13 +36,13 @@ class GetJson(vararg controllers: KClass<*>) {
 
                 var methodsRegistered = 0
 
+                val controllerInstance = controller.constructors.first().call()
+
                 controller.declaredFunctions.forEach { function ->
                     try {
                         val methodMapping = function.findAnnotation<Mapping>()
                         if (methodMapping != null) {
                             val fullPath = normalizePath(basePath, methodMapping.path)
-
-                            val controllerInstance = controller.constructors.first().call()
 
                             routeHandlers[fullPath] = RouteHandler(controllerInstance, function)
                             methodsRegistered++
