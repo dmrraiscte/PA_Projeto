@@ -395,7 +395,7 @@ fun listOrders(@Param("sortBy") sortField: String): List<Order> {
 
 // If the parameter name matches the query parameter name, you can omit the name
 @Mapping("/list")
-fun listOrders(@Param limit: Int?, @Param offset: Int?): List<Order> {
+fun listOrders(@Param limit: Int, @Param offset: Int): List<Order> {
     // ...
 }
 ```
